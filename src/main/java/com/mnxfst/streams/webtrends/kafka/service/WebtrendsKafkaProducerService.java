@@ -39,7 +39,7 @@ public class WebtrendsKafkaProducerService extends Application<WebtrendsKafkaPro
 
 	private ActorSystem actorSystem = null;
 	private ActorRef webtrendsKafkaProducerRef = null;
-	private ActorRef webtrendsStreamListenerRef = null;
+//	private ActorRef webtrendsStreamListenerRef = null;
 	
 
 
@@ -66,7 +66,7 @@ public class WebtrendsKafkaProducerService extends Application<WebtrendsKafkaPro
 							WebtrendsKafkaProducer.class, configuration.getKafkaProducer()));
 		}
 
-		this.webtrendsStreamListenerRef = actorSystem.actorOf(Props.create(WebtrendsStreamListenerActor.class, configuration.getWebtrendsStreamListener(), webtrendsKafkaProducerRef));
+		actorSystem.actorOf(Props.create(WebtrendsStreamListenerActor.class, configuration.getWebtrendsStreamListener(), webtrendsKafkaProducerRef));
 		
 		environment.jersey().register(new KafkaProducerStatisticsResource());
 	}
