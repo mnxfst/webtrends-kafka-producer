@@ -24,13 +24,9 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.routing.RoundRobinRouter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.mnxfst.streams.webtrends.kafka.producer.WebtrendsKafkaProducer;
 import com.mnxfst.streams.webtrends.kafka.resource.KafkaProducerStatisticsResource;
-import com.mnxfst.streams.webtrends.kafka.service.cfg.WebtrendsKafkaProducerConfiguration;
 import com.mnxfst.streams.webtrends.kafka.service.cfg.WebtrendsKafkaProducerServiceConfiguration;
-import com.mnxfst.streams.webtrends.kafka.service.cfg.WebtrendsStreamListenerConfiguration;
 import com.mnxfst.streams.webtrends.kafka.socket.WebtrendsStreamListenerActor;
 
 /**
