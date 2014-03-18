@@ -81,5 +81,4 @@ public class WebtrendsKafkaProducer extends UntypedActor {
 			unhandled(message);
 		}
 	}
-
 }

@@ -16,6 +16,9 @@
 
 package com.mnxfst.streams.webtrends.kafka.service;
 
+import io.dropwizard.Application;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
@@ -24,13 +27,11 @@ import akka.routing.RoundRobinRouter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.mnxfst.streams.webtrends.kafka.producer.WebtrendsKafkaProducer;
+import com.mnxfst.streams.webtrends.kafka.resource.KafkaProducerStatisticsResource;
 import com.mnxfst.streams.webtrends.kafka.service.cfg.WebtrendsKafkaProducerConfiguration;
 import com.mnxfst.streams.webtrends.kafka.service.cfg.WebtrendsKafkaProducerServiceConfiguration;
 import com.mnxfst.streams.webtrends.kafka.service.cfg.WebtrendsStreamListenerConfiguration;
 import com.mnxfst.streams.webtrends.kafka.socket.WebtrendsStreamListenerActor;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
 
 /**
  * Main class being in charge for initializing and ramping up the service
@@ -38,12 +39,14 @@ import com.yammer.dropwizard.config.Environment;
  * @since 18.03.2014
  *
  */
-public class WebtrendsKafkaProducerService extends Service<WebtrendsKafkaProducerServiceConfiguration> {
+public class WebtrendsKafkaProducerService extends Application<WebtrendsKafkaProducerServiceConfiguration> {
 
 	private ActorSystem actorSystem = null;
 	private ActorRef webtrendsKafkaProducerRef = null;
 	private ActorRef webtrendsStreamListenerRef = null;
 	
+
+
 	/**
 	 * @see com.yammer.dropwizard.Service#initialize(com.yammer.dropwizard.config.Bootstrap)
 	 */
@@ -66,36 +69,14 @@ public class WebtrendsKafkaProducerService extends Service<WebtrendsKafkaProduce
 					Props.create(
 							WebtrendsKafkaProducer.class, configuration.getKafkaProducer()));
 		}
-		
+
 		this.webtrendsStreamListenerRef = actorSystem.actorOf(Props.create(WebtrendsStreamListenerActor.class, configuration.getWebtrendsStreamListener(), webtrendsKafkaProducerRef));
 		
+		environment.jersey().register(new KafkaProducerStatisticsResource());
 	}
 	
 	public static void main(String[] args) throws Exception {
 		new WebtrendsKafkaProducerService().run(args);
-		
-		WebtrendsKafkaProducerServiceConfiguration cfg = new WebtrendsKafkaProducerServiceConfiguration();
-		WebtrendsKafkaProducerConfiguration prodCfg = new WebtrendsKafkaProducerConfiguration();
-		prodCfg.setKafkaBrokers("localhost:9092");
-		prodCfg.setNumOfProducers(1);
-		prodCfg.setSerializerClass("kafka.serializer.StringEncoder");
-		prodCfg.setZookeeperConnect("localhost:2181");
-		cfg.setKafkaProducer(prodCfg);
-		WebtrendsStreamListenerConfiguration listenerCfg = new WebtrendsStreamListenerConfiguration();
-		listenerCfg.setAuthAudience("auth.webtrends.com");
-		listenerCfg.setAuthScope("sapi.webtrends.com");
-		listenerCfg.setAuthUrl("https://sauth.webtrends.com/v1/token");
-		listenerCfg.setClientId("xxxxxxxxx");
-		listenerCfg.setClientSecret("xxxxxxxxxx");
-		listenerCfg.setEventStreamUrl("ws://sapi.webtrends.com/streaming");
-		listenerCfg.setSchemaVersion("2.1");
-		listenerCfg.setStreamVersion("2.1");
-		listenerCfg.setStreamQuery("select *");
-		listenerCfg.setStreamType("return_all");
-		cfg.setWebtrendsStreamListener(listenerCfg);
-		cfg.setHttpConfiguration(null);
-		cfg.setLoggingConfiguration(null);
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		System.out.println(mapper.writeValueAsString(cfg));
 	}
+
 }

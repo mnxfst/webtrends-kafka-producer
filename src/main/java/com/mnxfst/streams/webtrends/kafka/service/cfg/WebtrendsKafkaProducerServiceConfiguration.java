@@ -16,11 +16,12 @@
 
 package com.mnxfst.streams.webtrends.kafka.service.cfg;
 
+import io.dropwizard.Configuration;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.yammer.dropwizard.config.Configuration;
 
 /**
  * Provides all necessary settings for initializing the webtrends kafka producer
