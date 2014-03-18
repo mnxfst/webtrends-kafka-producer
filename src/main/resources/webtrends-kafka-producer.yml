@@ -1,0 +1,104 @@
+####################################################################################
+# Webtrends stream listener specific settings
+webtrendsStreamListener:
+  
+  # authentication audience, scope and url
+  authAudience: "auth.webtrends.com"
+  authScope: "sapi.webtrends.com"
+  authUrl: "https://sauth.webtrends.com/v1/token"
+
+  # client identifier and secret
+  clientId: "xxxxxxxxx"
+  clientSecret: "xxxxxxxxxx"
+  
+  # event stream location
+  eventStreamUrl: "ws://sapi.webtrends.com/streaming"
+
+  # stream query specific settings  
+  streamType: "return_all"
+  streamQuery: "select *"
+  streamVersion: "2.1"
+  schemaVersion: "2.1"
+  
+####################################################################################
+# Kafka producer settings
+kafkaProducer:
+  
+  # implementation used for serializing kafka messages 
+  serializerClass: "kafka.serializer.StringEncoder"
+  
+  # partitioner
+  partitionerClass: null
+  
+  # zookeeper and kafka broker connection strings
+  zookeeperConnect: "localhost:2181"
+  kafkaBrokers: "localhost:9092"
+  
+  # topic name
+  topic: "webtrends"
+  
+  # number of producers
+  numOfProducers: 1
+
+####################################################################################
+# HTTP-specific options.
+http:
+
+  # listen to ports 9090 (regular) and 9091 (admin)
+  port: 9090
+  adminPort: 9091
+
+  # disable request logging 
+  requestLog:
+
+    # Settings for logging to stdout.
+    console:
+
+      # If true, log requests to stdout.
+      enabled: false
+
+      # The time zone in which dates should be displayed.
+      timeZone: UTC
+
+      # A custom Logback format string.
+      logFormat: null
+
+# end: HTTP settings
+####################################################################################
+
+####################################################################################
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO,
+  # DEBUG, TRACE, or ALL.
+  level: INFO
+    
+  # deactivate console logging
+  console:
+    enabled: false     
+
+  # instead: use file logging
+  file:     
+    # enable (true) / disable (false) logging
+    enabled: true     
+    
+    # do not write log statements below this threshold to the file
+    threshold: INFO     
+    
+    # file to which current statements will be logged.
+    currentLogFilename: /var/log/wt-kafka/wt-kafka.log
+    
+    # When the log file rotates, the archived log will be renamed to this and gzipped. The
+    # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
+    # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
+    archivedLogFilenamePattern: /var/log/wt-kafka/wt-kafka-%d.log.gz
+
+    # The number of archived files to keep.
+    archivedFileCount: 10
+
+    # The timezone used to format dates. HINT: USE THE DEFAULT, UTC.
+    timeZone: UTC
+
+ # end: logging
+ ####################################################################################
