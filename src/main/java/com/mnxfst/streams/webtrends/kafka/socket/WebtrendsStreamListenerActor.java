@@ -48,12 +48,13 @@ public class WebtrendsStreamListenerActor extends UntypedActor {
 	private final String authUrl;
 	private final String clientId;
 	private final String clientSecret;
-	private String oAuthToken;
 	private final String streamType;
 	private final String streamQuery;
 	private final String streamVersion;
 	private final String schemaVersion;
 	private final String eventStreamUrl;
+
+	private String oAuthToken;
 
 	final ActorRef messageForwarderRef;
 		  
@@ -103,17 +104,17 @@ public class WebtrendsStreamListenerActor extends UntypedActor {
 			throw new RuntimeException("Unable to connect to web socket: " + e.getMessage(), e);
 		}		
 	}
-//	
-//	/**
-//	 * @see akka.actor.UntypedActor#postStop()
-//	 */
-//	public void postStop() throws Exception {
-//		try {
-//			this.webtrendsStreamSocketClient.stop();
-//		} catch(Exception e) {
-//			context().system().log().error("Failed to shutdown web-socket listener. Error: " + e.getMessage());
-//		}
-//	}
+	
+	/**
+	 * @see akka.actor.UntypedActor#postStop()
+	 */
+	public void postStop() throws Exception {
+		try {
+			this.webtrendsStreamSocketClient.stop();
+		} catch(Exception e) {
+			context().system().log().error("Failed to shutdown web-socket listener. Error: " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Executed after establishing web socket connection with streams api
